@@ -31,6 +31,7 @@
         @focus="focus = true"
         @blur="focus = false"
         @change="handleChange"
+        @click="handleClick"
         :name="name"
         :disabled="isDisabled"
         tabindex="-1"
@@ -122,8 +123,18 @@
     },
 
     methods: {
+      handleClick() {
+          this.$nextTick(() => {
+              if (this.model === this.label) {
+                  this.$emit("input", "");
+                  this.$emit("change", "");
+                  this.isGroup && this.dispatch("ElRadioGroup", "handleChange", "");
+              }
+          });
+      },
       handleChange() {
         this.$nextTick(() => {
+          if (this.model === this.label) return;
           this.$emit('change', this.model);
           this.isGroup && this.dispatch('ElRadioGroup', 'handleChange', this.model);
         });
